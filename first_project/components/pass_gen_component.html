@@ -1,0 +1,36 @@
+
+    <div class="form-group" id="pass_gen">
+        <label for="">Длина пароля</label>
+        <select name="length" class="form-control">
+            <option>8</option> 
+            <option>9</option> 
+            <option>10</option> 
+            <option>11</option> 
+            <option>12</option> 
+            <option>13</option> 
+            <option>14</option> 
+            <option>15</option> 
+            <option>16</option>
+        </select>
+    </div>
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" name="uppercase">
+        <label for="" class="form-check-label">Использовать прописные буквы</label>
+    
+    <br>
+        <input class="form-check-input" type="checkbox" name="numbers">
+        <label class="form-check-label">
+            Использовать числа
+        </label>
+    <br>
+    <input class="form-check-input" type="checkbox" name="special"> 
+    <label class="form-check-label"> 
+        Использовать спецсимволы 
+    </label>
+    <br>
+    <button class="btn btn-success" type="button" id="pass_gen_btn">Сгенерировать пароль</button>
+    <br>
+    <br>
+
+    <h5 class="alert alert-success">Ваш сгенерированный пароль: <strong id="pass_gen_result"></strong></h5>
+    </div>

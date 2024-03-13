@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    {% load static %}
+    {% include 'imports.html' %}
 </head>
-<body>
+<body class="bg-body-tertiary">
+    {% include 'header.html' %}
     <h1>prices page</h1>
+
+    {% include 'scripts.html' %}
 </body>
 </html>

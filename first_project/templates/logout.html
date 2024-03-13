@@ -7,13 +7,14 @@
     {% load static %}
     {% include 'imports.html' %}
 </head>
-<body class="bg-body-tertiary">
+<body>
     {% include 'header.html' %}
-
-    <h1>
-        About page
-    </h1>
+    
+    <div class="form-section container">
+        <h2>Вы успешно вышли с сайта</h2>
+        <a href="{% url 'login' %}">Войти в личный кабинет снова</a>
+    </div>
 
     {% include 'scripts.html' %}
 </body>
-</html>  
+</html>
