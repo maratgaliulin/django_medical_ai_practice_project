@@ -1,12 +1,14 @@
 import random
 from django.forms import BaseModelForm
 from django.http import HttpResponse
-from django.shortcuts import render, redirect, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic.edit import CreateView
-from django.urls import reverse_lazy, reverse
+from django.views.generic import TemplateView
+from django.urls import reverse
+from django.http import Http404
 from .forms import LoginForm, RegistrationForm
 
 def home(request):
@@ -48,5 +50,16 @@ class CustomRegistrationView(CreateView):
         user = form.save()
         return super().form_valid(form)
 
-    # def success_url(self) -> str:
-    #     return reverse('home')
+class UserProfileView(TemplateView):
+    template_name = 'profile_page.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        try:
+            user = get_object_or_404(User, username=self.kwargs.get('username'))
+        except User.DoesNotExist:
+            raise Http404('Пользователь не найден')
+        context['user_profile'] = user
+        context['user_posts'] = ''
+        context['title'] = f'Профиль пользователя {user}'
+        return context
