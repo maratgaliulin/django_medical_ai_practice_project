@@ -2,7 +2,7 @@ import random
 from django.forms import BaseModelForm
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
-from django.contrib import messages
+from django.contrib import messages, admin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic.edit import CreateView
@@ -10,6 +10,7 @@ from django.views.generic import TemplateView
 from django.urls import reverse
 from django.http import Http404
 from .forms import LoginForm, RegistrationForm
+from . import models
 
 def home(request):
     return render(request, 'index.html')
@@ -63,3 +64,9 @@ class UserProfileView(TemplateView):
         context['user_posts'] = ''
         context['title'] = f'Профиль пользователя {user}'
         return context
+    
+@admin.register(models.PostFilesModel)
+class PostFilesAdmin(admin.ModelAdmin):
+    list_display = ('title', 'code', 'download_count', )
+    search_fields = ['title', ]
+    exclude = ['download_count', ]
