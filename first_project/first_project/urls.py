@@ -18,6 +18,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib import admin
 from django.urls import path
 from . import views
+admin.autodiscover()
 
 urlpatterns = [
     path('admin/password_reset/', auth_views.PasswordResetView.as_view(), name='admin_password_reset'),

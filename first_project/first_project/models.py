@@ -32,7 +32,7 @@ class CategoryModel(MPTTModel):
         order_insertion_by = ['title']
 
     class Meta:
-        app_label = 'first_project.CategoryModel'
+        app_label = 'first_project'
         unique_together = 'parent', 'slug'
         verbose_name = 'Категория поста'
         verbose_name_plural = 'Категории постов'
@@ -58,14 +58,14 @@ class PostFilesModel(Model):
         verbose_name='Скачиваний'
     )
     class Meta:
-        app_label = 'first_project.PostFilesModel'
+        app_label = 'first_project'
         verbose_name='Файл поста'
         verbose_name_plural = 'Файлы постов'
         
 
-    # def increment_download_count(self):
-    #     self.download_count += 1
-    #     self.save()
+    def increment_download_count(self):
+        self.download_count += 1
+        self.save()
 
     def __str__(self):
         return self.title
@@ -117,7 +117,7 @@ class PostModel(Model):
         ]
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
-        app_label = 'first_project.PostModel'
+        app_label = 'first_project'
 
         
 

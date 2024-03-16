@@ -40,6 +40,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_ckeditor_5',
     'mptt',
+    'first_project',
+    # 'first_project.models.PostFilesModel',
+    # 'first_project.models.PostModel',
+    # 'first_project.models.CategoryModel',
+    # 'first_project.admin.AdminPostModel',
+    
+    
 ]
 
 MIDDLEWARE = [
@@ -84,7 +91,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'medical_ai',
         'USER': 'postgres',
-        'PASSWORD': 'root',
+        'PASSWORD': 'sup@r',
         'HOST': 'localhost',
         'PORT': 5432,
     }
@@ -125,11 +132,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-# import os.path
+import os.path
 
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / "static/"
-# STATICFILES_DIRS = (os.path.join('static'), )
+# STATIC_ROOT = BASE_DIR / "static/"
+STATICFILES_DIRS = (os.path.join('static'), )
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media/"
