@@ -34,4 +34,7 @@ urlpatterns = [
     path('logout/', views.CustomLogoutView.as_view(), name='logout'),
     path('register/', views.CustomRegistrationView.as_view(), name='register'),
     path('prices/', views.prices, name='prices'),
+
+
+    path('<str:username>/', views.UserProfileView.as_view(), name='user_profile'),
 ]

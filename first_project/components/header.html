@@ -16,8 +16,8 @@
           {% if user.is_authenticated %}
             <div class="d-flex justify-content-between align-items-center">
               <div class="mx-1">
-                <span class="d-block bg-primary px-2 py-2 rounded" >
-                  {{request.user}}
+                <span class="d-block bg-primary px-2 py-2 rounded" > 
+                    <a class="dropdown-item dd-item-color" href="{% url 'user_profile' username=user.username %}">{{request.user}}</a>  
                 </span>
               </div>
                 <form action="{% url 'logout' %}" method="post">

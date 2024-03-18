@@ -10,6 +10,7 @@ from django.views.generic import TemplateView
 from django.urls import reverse
 from django.http import Http404
 from .forms import LoginForm, RegistrationForm
+from .models import PostModel
 
 
 def home(request):
@@ -61,7 +62,7 @@ class UserProfileView(TemplateView):
         except User.DoesNotExist:
             raise Http404('Пользователь не найден')
         context['user_profile'] = user
-        context['user_posts'] = ''
+        context['user_posts'] = PostModel.post_manager.filter(author=user)[:5]
         context['title'] = f'Профиль пользователя {user}'
         return context
     

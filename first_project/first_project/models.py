@@ -1,5 +1,7 @@
+import random
+
 from django_ckeditor_5.fields import CKEditor5Field
-from django.db.models import Model, FileField, IntegerField, CharField, TextChoices, SlugField,ImageField, ForeignKey, DateTimeField, Manager, Index, CASCADE, PROTECT
+from django.db.models import Model, FileField, IntegerField, CharField, TextChoices, SlugField,ImageField, ForeignKey, DateTimeField, Manager, Index, OneToOneField, CASCADE, PROTECT, SET_NULL
 from django.contrib.auth.models import User
 from django.utils import timezone 
 from mptt.models import TreeForeignKey
@@ -67,6 +69,18 @@ class PostFilesModel(Model):
         self.download_count += 1
         self.save()
 
+    def save(self, *args, **kwargs):
+        if not self.code:
+            self.code = self.generate_unique_code()
+        super().save(*args, **kwargs)
+
+    @staticmethod
+    def generate_unique_code():
+        code = random.randint(100000, 999999)
+        while PostFilesModel.objects.filter(code=code).exists():
+            code = random.randint(100000, 999999)
+        return code
+
     def __str__(self):
         return self.title
 
@@ -106,6 +120,12 @@ class PostModel(Model):
                               choices=Status.choices,
                               default=Status.DRAFT,
                               verbose_name="Статус")
+    file = OneToOneField(PostFilesModel,
+                            on_delete=SET_NULL,
+                            null=True,
+                            blank=True,
+                            verbose_name="Файл",
+                            related_name="post")
     
 
     objects = Manager()

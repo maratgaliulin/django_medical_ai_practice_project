@@ -41,10 +41,6 @@ INSTALLED_APPS = [
     'django_ckeditor_5',
     'mptt',
     'first_project',
-    # 'first_project.models.PostFilesModel',
-    # 'first_project.models.PostModel',
-    # 'first_project.models.CategoryModel',
-    # 'first_project.admin.AdminPostModel',
     
     
 ]
@@ -91,7 +87,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'medical_ai',
         'USER': 'postgres',
-        'PASSWORD': 'sup@r',
+        'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': 5432,
     }
