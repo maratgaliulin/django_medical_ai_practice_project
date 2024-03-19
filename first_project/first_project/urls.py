@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib.auth import views as auth_views
 from django.contrib import admin
-from django.urls import path
-from . import views
+from django.urls import path, include
+from . import views, api
+from django.conf.urls.static import static  
+from django.conf import settings
 admin.autodiscover()
 
 urlpatterns = [
@@ -37,4 +39,16 @@ urlpatterns = [
 
 
     path('<str:username>/', views.UserProfileView.as_view(), name='user_profile'),
+    path('post/<int:pk>-<str:slug>/', views.post_page, name='post_page'),
+
+    path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),
 ]
+
+
+# API паттерны
+urlpatterns += [
+    path('get-file/', api.GetFilePath.as_view()),
+]
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

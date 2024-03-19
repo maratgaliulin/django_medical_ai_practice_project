@@ -10,7 +10,34 @@ from django.views.generic import TemplateView
 from django.urls import reverse
 from django.http import Http404
 from .forms import LoginForm, RegistrationForm
-from .models import PostModel
+from .models import PostModel, CategoryModel
+
+
+def category_page(request, pk, slug):
+    category = CategoryModel.objects.get(pk=pk)
+    descendant_categories = category.get_descendants(include_self=True)
+    posts = PostModel.objects.filter(category__in=descendant_categories)
+
+    context = {
+        'category' : category,
+        'posts' : posts,
+    }
+
+    return render(request, 'category_page.html', context)
+
+
+def post_page(request, pk, slug):
+    post = PostModel.objects.get(pk=pk)
+    post.views += 1
+    post.save()
+
+    context = {
+        'post': post,
+    }
+
+    return render(request,
+                  'post_page.html',
+                  context)
 
 
 def home(request):

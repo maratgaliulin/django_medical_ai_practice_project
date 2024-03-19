@@ -110,6 +110,7 @@ class PostModel(Model):
                                 verbose_name="Краткое описание",
                                 blank=True)
     full_body = CKEditor5Field(verbose_name='Содержимое поста')
+    
     publish = DateTimeField(default=timezone.now,
                                    verbose_name="Опубликовано")
     created = DateTimeField(auto_now_add=True,
@@ -143,7 +144,7 @@ class PostModel(Model):
 
     def get_absolute_url(self):
         """Метод получения URL-адреса объекта"""
-        return reverse('blog:post_page', args=[int(self.pk), str(self.slug)])
+        return reverse('post_page', args=[int(self.pk), str(self.slug)])
 
     def get_next_post(self):
         """Метод получения следующего поста"""

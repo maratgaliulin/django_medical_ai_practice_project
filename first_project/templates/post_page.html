@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% load static %}
+    {% include 'imports.html' %}
+</head>
+<body>
+    {% include 'header.html' %}
+   
+        <section class="post">
+            <div class="container">
+                <h1>{{ post.title }}</h1>
+                <p>{{ post.full_body | safe }}</p>
+            </div>
+        </section>
+        
+    {% include 'scripts.html' %}
+</body>
+</html>

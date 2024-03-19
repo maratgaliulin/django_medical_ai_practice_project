@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% load static %}
+    {% include 'imports.html' %}
+</head>
+<body>
+    {% include 'header.html' %}
+    <section class="posts">
+        <div class="container">
+            <hr>
+            {% for post in posts %}
+                <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+                <p>{{ post.short_body | safe }}</p>
+                <hr>
+            {% endfor %}
+        </div>
+    </section>
+    {% include 'scripts.html' %}
+</body>
+</html>
