@@ -41,7 +41,11 @@ def post_page(request, pk, slug):
 
 
 def home(request):
-    return render(request, 'index.html')
+    categories_list = CategoryModel.objects.all()
+    context = {
+        'categories_list' : categories_list
+    }
+    return render(request, 'index.html', context)
 
 def about(request):
     return render(request, 'about.html')

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from . import models
 from django.utils.html import format_html
+from mptt.admin import DraggableMPTTAdmin
 
 
 @admin.register(models.PostModel)
@@ -34,4 +35,11 @@ class PostFilesAdmin(admin.ModelAdmin):
     search_fields = ['title', ]
     exclude = ['download_count', ]
     readonly_fields = ('code',)
-    
+
+
+@admin.register(models.CategoryModel)
+class CategoryAdmin(DraggableMPTTAdmin):
+    list_display = ('tree_actions', 'indented_title', 'parent',)
+    list_display_links = ('indented_title',)
+    prepopulated_fields = {'slug': ('title',)}
+    search_fields = ['title', ]
