@@ -1,20 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    {% load static %}
-    {% include 'imports.html' %}
-</head>
-<body>
-    {% include 'header.html' %}
+{% extends 'base.html' %}    
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
     
     <div class="form-section container">
         <h2>Вы успешно вышли с сайта</h2>
         <a href="{% url 'login' %}">Войти в личный кабинет снова</a>
     </div>
 
-    {% include 'scripts.html' %}
-</body>
-</html>
+{% endblock %}

@@ -1,19 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    {% load static %}
-    {% include 'imports.html' %}
-</head>
-<body class="bg-body-tertiary">
-    {% include 'header.html' %}
+{% extends 'base.html' %}    
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
 
     <h1>
         About page
     </h1>
 
-    {% include 'scripts.html' %}
-</body>
-</html>  
+{% endblock %}

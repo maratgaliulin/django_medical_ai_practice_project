@@ -30,18 +30,22 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     
-    path('', views.home, name='home'),
-    path('about/', views.about, name='about'),
+    path('', views.IndexView.as_view(), name='home'),
+    path('about/', views.AboutView.as_view(), name='about'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', views.CustomLogoutView.as_view(), name='logout'),
     path('register/', views.CustomRegistrationView.as_view(), name='register'),
-    path('prices/', views.prices, name='prices'),
+    path('prices/', views.PricesView.as_view(), name='prices'),
 
 
     path('<str:username>/', views.UserProfileView.as_view(), name='user_profile'),
-    path('post/<int:pk>-<str:slug>/', views.post_page, name='post_page'),
+    path('post/<slug:category_slug>/<slug:slug>', views.PostPageView.as_view(), name='post_page'),
+    path('category/<slug:category_slug>/<slug:slug>/', views.CategoryPageView.as_view(), name='category_page'),
 
     path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),
+
+    path('<str:username>/settings/', views.UserSettingsView.as_view(), name='profile_settings'),  
+    path('<str:username>/posts/', views.UserPostsView.as_view(), name='user_posts_page'),
 ]
 
 

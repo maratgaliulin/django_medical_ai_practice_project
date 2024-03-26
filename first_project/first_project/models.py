@@ -6,9 +6,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone 
 from mptt.models import TreeForeignKey
 from django.urls import reverse
-
-
-from django.urls import reverse  
+ 
 from mptt.managers import TreeManager  
 from mptt.models import MPTTModel, TreeForeignKey
 
@@ -40,11 +38,10 @@ class CategoryModel(MPTTModel):
         verbose_name_plural = 'Категории постов'
 
     def get_absolute_url(self):
-        return reverse('blog:category_page', args=[int(self.pk), str(self.slug)])
+        return reverse('category_page', args=[str(self.pk), str(self.slug)])
 
     def __str__(self):
         return self.title
-    
 
 class PostFilesModel(Model):
     title = CharField(max_length=200,
