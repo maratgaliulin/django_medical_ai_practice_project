@@ -12,7 +12,7 @@ from django.urls import reverse, reverse_lazy
 from django.http import Http404
 from .forms import LoginForm, RegistrationForm, UserInfoForm, UserPasswordForm, AddPostByAuthorForm, AddCategoryByAuthorForm
 from .models import PostModel, CategoryModel
-from .mixins import PermissionGroupRequiredMixin, PermissionSameAuthorMixin
+from .mixins import PermissionSameAuthorMixin
 from .decorators import set_template
 from pytils.translit import slugify
 
@@ -242,7 +242,13 @@ class AddPostByAuthorView(UserPassesTestMixin, CreateView):
         return super().form_valid(form)
 
 class EditPostByAuthorView(PostByAuthor, PermissionSameAuthorMixin, UpdateView):
+    template_name = 'edit_post.html'
+    model = PostModel
+    group_required = 'Автор'
     extra_context = {'title' : 'Изменить пост'}
+
+    def get_absolute_url(self):
+        return reverse_lazy('user_profile', kwargs={'username' : self.request.user.username})
 
 class DeletePostByAuthorView(PermissionSameAuthorMixin, DeleteView):
     template_name = 'delete_post_confirm.html'
