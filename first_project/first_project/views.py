@@ -1,16 +1,20 @@
+from typing import Any
 from django.db.models.base import Model as Model
-from django.http.response import HttpResponseForbidden       
+from django.http.response import HttpResponse as HttpResponse, HttpResponseForbidden       
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import CreateView
-from django.views.generic import TemplateView, ListView, DetailView
-from django.urls import reverse
+from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.urls import reverse, reverse_lazy
 from django.http import Http404
-from .forms import LoginForm, RegistrationForm, UserInfoForm, UserPasswordForm
+from .forms import LoginForm, RegistrationForm, UserInfoForm, UserPasswordForm, AddPostByAuthorForm, AddCategoryByAuthorForm
 from .models import PostModel, CategoryModel
+from .mixins import PermissionGroupRequiredMixin, PermissionSameAuthorMixin
+from .decorators import set_template
+from pytils.translit import slugify
 
 class CategoryPageView(ListView):
     model = PostModel
@@ -98,7 +102,14 @@ class CustomRegistrationView(CreateView):
         return super().form_valid(form)
 
 class UserProfileView(TemplateView):
-    template_name = 'profile_page.html'
+    template_name = 'profile_page.html'  
+    author_template_name = 'profile_page_author.html'  
+    is_author = False  
+    extended_group = 'Автор'
+
+    @set_template(author_template_name, 'is_author')  
+    def dispatch(self, request, *args, **kwargs):  
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -109,6 +120,9 @@ class UserProfileView(TemplateView):
         context['user_profile'] = user
         context['user_posts'] = PostModel.objects.filter(author=user)[:5]
         context['title'] = f'Профиль пользователя {user}'
+        context['is_author'] = self.is_author  
+        if self.is_author:  
+            context['drafts'] = PostModel.objects.filter(author=user, status='ЧЕ')[:7]
         return context
     
 class UserSettingsView(LoginRequiredMixin, TemplateView):
@@ -154,10 +168,21 @@ class UserSettingsView(LoginRequiredMixin, TemplateView):
         
 class UserPostsView(ListView):  
     template_name = 'user_posts_page.html'  
+    author_template_name = 'user_posts_page_author.html'
     context_object_name = 'posts'  
+    is_author = False
+    extended_group = 'Автор'
+
+    @set_template(author_template_name, 'is_author')
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):  
-        return PostModel.objects.filter(author__username=self.kwargs.get('username'))  
+        if self.is_author:
+            return (PostModel.objects.filter(author__username=self.kwargs.get('username'))
+                    .order_by('-status', '-publish'))  
+        else:
+            return PostModel.objects.filter(author__username=self.kwargs.get('username'))
 
     def get_context_data(self, **kwargs):  
         context = super().get_context_data(**kwargs)  
@@ -166,5 +191,64 @@ class UserPostsView(ListView):
         except User.DoesNotExist:  
             raise Http404("Пользователь не найден")  
         context['author'] = author  
-        context['title'] = f'Посты пользователя {author}'  
+        context['title'] = f'Посты пользователя {author}' 
+        context['is_author'] = self.is_author
         return context
+
+class PostByAuthor:  
+    template_name = 'add_post.html'  
+    form_class = AddPostByAuthorForm  
+    model = PostModel  
+
+    def get_success_url(self):  
+        return reverse('user_profile', kwargs={'username': self.request.user.username})  
+
+    def form_valid(self, form):  
+        form.instance.slug = slugify(form.instance.title)  
+        form.instance.author = self.request.user  
+        return super().form_valid(form)
+
+class AddCategoryAndFile(UserPassesTestMixin, CreateView):  
+    def test_func(self):  
+        return self.request.user.groups.filter(name='Автор').exists()  
+
+    def get_success_url(self):  
+        return reverse('user_profile', kwargs={'username': self.request.user.username})
+
+class AddCategoryView(AddCategoryAndFile):  
+    template_name = 'add_category.html'  
+    form_class = AddCategoryByAuthorForm  
+    model = CategoryModel  
+    extra_context = {'title': 'Добавление категории'}  
+
+    def form_valid(self, form):  
+        form.instance.slug = slugify(form.instance.title)  
+        return super().form_valid(form)
+
+class AddPostByAuthorView(UserPassesTestMixin, CreateView):
+    template_name = 'add_post.html'
+    form_class = AddPostByAuthorForm
+    model = PostModel
+
+    def test_func(self):
+        return self.request.user.groups.filter(name='Автор').exists()
+
+    def get_success_url(self):
+        return reverse('user_profile', kwargs={'username': self.request.user.username})
+
+    def form_valid(self, form):
+        form.instance.slug = slugify(form.instance.title)
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+class EditPostByAuthorView(PostByAuthor, PermissionSameAuthorMixin, UpdateView):
+    extra_context = {'title' : 'Изменить пост'}
+
+class DeletePostByAuthorView(PermissionSameAuthorMixin, DeleteView):
+    template_name = 'delete_post_confirm.html'
+    model = PostModel
+    group_required = 'Автор'
+    extra_context = {'title' : 'Удалить пост?'}
+
+    def get_success_url(self):
+        return reverse_lazy('user_profile', kwargs={'username' : self.request.user.username})

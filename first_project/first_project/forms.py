@@ -3,6 +3,8 @@ from django.contrib.auth import password_validation
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
+from .models import PostModel, CategoryModel, PostFilesModel
+
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(
@@ -159,4 +161,32 @@ class UserPasswordForm(PasswordChangeForm):
             'placeholder': 'Повторите новый пароль'  
         })  
     )
+
+class AddPostByAuthorForm(forms.ModelForm):  
+    def __init__(self, *args, **kwargs):  
+        super().__init__(*args, **kwargs)  
+        for field in self.fields:  
+            self.fields[field].widget.attrs.update({'class': 'form-control', 'autofocus': ''})  
+
+        self.fields['short_body'].widget.attrs.update({'class': 'django_ckeditor_5'})  
+        self.fields['full_body'].widget.attrs.update({'class': 'django_ckeditor_5'})  
+        self.fields['category'].widget.attrs.update({'class': 'form-select'})  
+        self.fields["short_body"].required = False  
+        self.fields["full_body"].required = False  
+
+    class Meta:  
+        model = PostModel  
+        fields = ('title', 'image', 'category', 'short_body', 'full_body', 'status', 'file')
+        
+class AddCategoryByAuthorForm(forms.ModelForm):  
+    def __init__(self, *args, **kwargs):  
+        super().__init__(*args, **kwargs)  
+        for field in self.fields:  
+            self.fields[field].widget.attrs.update({'class': 'form-control', 'autofocus': ''})  
+
+        self.fields['description'].widget.attrs.update({'class': 'django_ckeditor_5'})  
+
+    class Meta:  
+        model = CategoryModel  
+        fields = ('title', 'parent', 'description')
 

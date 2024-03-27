@@ -19,27 +19,34 @@
             <div class="col-lg-9 col-sm-12 cat-block">
                 {% for post in posts %}
 
-                <div class="row">
-                    <div class="col-lg-4 col-sm-12 d-flex align-items-center">
-                        <img src="{{post.image.url}}" alt="{{post.title}}" class="img-fluid">
-                    </div>
-
-                    <div class="col-lg-8 col-sm-12">
-                        <h2 class="head2">
-                            <a href="{{post.category.get_absolute_url}}">{{post.title}}</a>
-                        </h2>
-                        <div class="mb-3">
-                            <p class="lead">
-                                <a href="{{post.category.get_absolute_url}}">{{post.category}}</a>
-                                |
-                                <a href="{% url 'profile_settings' username=post.author %}">{{post.author}}</a>
-                                |
-                                {{post.publish}} |
-                            </p>
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-12 d-flex align-items-center">
+                            <img src="{{post.image.url}}" alt="{{post.title}}" class="img-fluid">
                         </div>
-                        {{post.short_body | safe}}
+
+                        <div class="col-lg-8 col-sm-12">
+                            <h2 class="head2">
+                                <a href="{{post.category.get_absolute_url}}">{{post.title}}</a>
+                            </h2>
+                            <div class="mb-3">
+                                <p class="lead">
+                                    <a href="{{post.category.get_absolute_url}}">{{post.category}}</a>
+                                    |
+                                    <a href="{% url 'user_profile' username=post.author %}">{{post.author}}</a>
+                                    |
+                                    {{post.publish}} |
+                                </p>
+                            </div>
+                            {{post.short_body | safe}}
+
+                            {% if is_author %}
+                                <div class="col-3 d-flex text-center">
+                                    {% block buttons %}
+                                    {% endblock %}
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
 
                 <hr class="m-3">
 
